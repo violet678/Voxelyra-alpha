@@ -1,0 +1,74 @@
+#------------
+#bibliotecas
+import logging
+import pgzero
+from pgzero.actor import Actor
+from pgzero.keyboard import keys
+#-----------
+
+#-----------
+#varievaies
+FPS = 30
+WIDTH = 800
+HEIGHT = 600   
+#-----------
+
+#-----------
+#sprites
+fundo = None
+fundoAzul = None
+fundoRosa = None
+fundoAmarelo = None
+fundoRoxo = None
+quest = None
+character = None
+
+#-----------
+#função de inicialização
+def on_screen_init():
+    global fundo, quest
+    fundo = Actor("fundo")
+    quest = Actor("quest", (720, 600))
+#-----------
+
+#-----------
+#criando o ator
+def draw():
+    global fundo, quest, character
+    if fundo is None:
+        fundo = Actor("fundo")
+        character = Actor("characterbg", (500, 300))
+        quest = Actor("questbg", (750, 50))
+      
+    
+    screen.clear()
+    fundo.draw()
+    character.draw()
+    quest.draw()
+    screen.draw.text("Olá", (550, 70), fontsize=50, color="white")
+#-----------
+
+#-----------
+#criando a movimentação
+def update():
+    global character
+    if keyboard.left or keyboard.a and character.x > 20:
+        character.x -= 5
+    if keyboard.right or keyboard.d and character.x < 760:
+        character.x += 5
+    if keyboard.up or keyboard.w and character.y > 20:
+        character.y -= 5
+    if keyboard.down or keyboard.s and character.y < 500:
+        character.y += 5
+
+# trocando fundo
+    if character.x == 30:
+        fundo.image = "fundoAzul"
+#-----------
+
+#-----------
+#fazendo o jogo rodar !!!!!NÃO MEXA NISSO A MENOS SE FOR NESCESSARIO!!!
+if __name__ == '__main__':
+    import pgzrun
+    pgzrun.go()
+#-----------
