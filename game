@@ -20,29 +20,34 @@ fundoAzul = None
 fundoRosa = None
 fundoAmarelo = None
 fundoRoxo = None
+fundo_atual= None
 quest = None
 character = None
 
 #-----------
 #função de inicialização
 def on_screen_init():
-    global fundo, quest
+    global fundo, fundoAzul, fundoRosa, fundoAmarelo, fundoRoxo, fundo_atual, quest
     fundo = Actor("fundo")
+    fundoAzul = Actor("fundoazul")
+    fundo_atual = fundo
     quest = Actor("quest", (720, 600))
 #-----------
 
 #-----------
 #criando o ator
 def draw():
-    global fundo, quest, character
+    global fundo, quest, character, fundo_atual, fundoAzul
     if fundo is None:
         fundo = Actor("fundo")
+        fundoAzul = Actor("fundoazul")
         character = Actor("characterbg", (500, 300))
         quest = Actor("questbg", (750, 50))
+        fundo_atual = fundo
       
     
     screen.clear()
-    fundo.draw()
+    fundo_atual.draw()
     character.draw()
     quest.draw()
     screen.draw.text("Olá", (550, 70), fontsize=50, color="white")
@@ -51,8 +56,9 @@ def draw():
 #-----------
 #criando a movimentação
 def update():
-    global character
+    global character, fundo_atual
     if keyboard.left or keyboard.a and character.x > 20:
+        fundo_atual = fundoAzul
         character.x -= 5
     if keyboard.right or keyboard.d and character.x < 760:
         character.x += 5
@@ -61,10 +67,6 @@ def update():
     if keyboard.down or keyboard.s and character.y < 500:
         character.y += 5
 
-# trocando fundo
-    if character.x == 30:
-        fundo.image = "fundoAzul"
-#-----------
 
 #-----------
 #fazendo o jogo rodar !!!!!NÃO MEXA NISSO A MENOS SE FOR NESCESSARIO!!!
