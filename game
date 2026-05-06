@@ -11,6 +11,9 @@ from pgzero.keyboard import keys
 FPS = 30
 WIDTH = 800
 HEIGHT = 600   
+
+reputacao = 30
+dinheiro = 100
 #-----------
 
 #-----------
@@ -20,52 +23,62 @@ fundoAzul = None
 fundoRosa = None
 fundoAmarelo = None
 fundoRoxo = None
-fundo_atual= None
+fundo_atual = None
+
 quest = None
 character = None
 
 #-----------
-#função de inicialização
-def on_screen_init():
-    global fundo, fundoAzul, fundoRosa, fundoAmarelo, fundoRoxo, fundo_atual, quest
-    fundo = Actor("fundo")
-    fundoAzul = Actor("fundoazul")
-    fundo_atual = fundo
-    quest = Actor("quest", (720, 600))
+
+def ensure_sprites():
+    global fundo, fundoAzul, fundoRosa, fundoAmarelo, fundoRoxo, fundo_atual, quest, character
+    if fundo is None:
+        fundo = Actor("fundo")
+        fundoAzul = Actor("fundoazul")
+        fundoRosa = Actor("fundorosa")
+        fundoAmarelo = Actor("fundoamarelo")
+        fundoRoxo = Actor("fundoroxo")
+        fundo_atual = fundo
+        quest = Actor("questbg", (750, 70))
+        character = Actor("characterbg", (400, 300))
+
 #-----------
 
 #-----------
 #criando o ator
 def draw():
     global fundo, quest, character, fundo_atual, fundoAzul
-    if fundo is None:
-        fundo = Actor("fundo")
-        fundoAzul = Actor("fundoazul")
-        character = Actor("characterbg", (500, 300))
-        quest = Actor("questbg", (750, 50))
-        fundo_atual = fundo
-      
-    
+    ensure_sprites()
     screen.clear()
     fundo_atual.draw()
     character.draw()
     quest.draw()
-    screen.draw.text("Olá", (550, 70), fontsize=50, color="white")
+    screen.draw.text("missão", (550, 70), fontsize=50, color="white")
+    screen.draw.text("reputação: " + str(reputacao), (50, 90), fontsize=30, color="white")
+    screen.draw.text("dinheiro:" + str(dinheiro), (50, 50), fontsize=30, color="white")
 #-----------
 
 #-----------
 #criando a movimentação
 def update():
     global character, fundo_atual
-    if keyboard.left or keyboard.a and character.x > 20:
-        fundo_atual = fundoAzul
+    ensure_sprites()
+    if (keyboard.left or keyboard.a) and character.x > 20:
         character.x -= 5
-    if keyboard.right or keyboard.d and character.x < 760:
+        if character.x <= 20:
+            fundo_atual = fundoAzul
+    if (keyboard.right or keyboard.d) and character.x < 760:
         character.x += 5
-    if keyboard.up or keyboard.w and character.y > 20:
+        if character.x == 760:
+            fundo_atual = fundoAmarelo
+    if (keyboard.up or keyboard.w) and character.y > 20:
         character.y -= 5
-    if keyboard.down or keyboard.s and character.y < 500:
+        if character.y == 20:
+            fundo_atual = fundoRosa
+    if (keyboard.down or keyboard.s) and character.y < 500:
         character.y += 5
+        if character.y == 500:
+            fundo_atual = fundoRoxo
 
 
 #-----------
