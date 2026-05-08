@@ -13,12 +13,14 @@ WIDTH = 800
 HEIGHT = 600   
 
 reputacao = 30
-dinheiro = 100
+dinheiro = 500
+Vida = 100
+
 #-----------
 
 #-----------
 #sprites
-fundo = None
+fundoVerde = None
 fundoAzul = None
 fundoRosa = None
 fundoAmarelo = None
@@ -31,14 +33,14 @@ character = None
 #-----------
 
 def ensure_sprites():
-    global fundo, fundoAzul, fundoRosa, fundoAmarelo, fundoRoxo, fundo_atual, quest, character
-    if fundo is None:
-        fundo = Actor("fundo")
+    global fundoVerde, fundoAzul, fundoRosa, fundoAmarelo, fundoRoxo, fundo_atual, quest, character
+    if fundoVerde is None:
+        fundoVerde = Actor("fundoverde")
         fundoAzul = Actor("fundoazul")
         fundoRosa = Actor("fundorosa")
         fundoAmarelo = Actor("fundoamarelo")
         fundoRoxo = Actor("fundoroxo")
-        fundo_atual = fundo
+        fundo_atual = fundoVerde
         quest = Actor("questbg", (750, 70))
         character = Actor("characterbg", (400, 300))
 
@@ -59,27 +61,59 @@ def draw():
 #-----------
 
 #-----------
-#criando a movimentação
+#criando a movimentação e troca de fundo
 def update():
     global character, fundo_atual
     ensure_sprites()
+    #----------------
+    #troca para o proximo fundo
+
+    #fundo azul
     if (keyboard.left or keyboard.a) and character.x > 20:
         character.x -= 5
         if character.x <= 20:
             fundo_atual = fundoAzul
+
+    #fundo amarelo
     if (keyboard.right or keyboard.d) and character.x < 760:
         character.x += 5
         if character.x == 760:
             fundo_atual = fundoAmarelo
+
+    #fundo rosa
     if (keyboard.up or keyboard.w) and character.y > 20:
         character.y -= 5
         if character.y == 20:
             fundo_atual = fundoRosa
+
+    #fundo roxo
     if (keyboard.down or keyboard.s) and character.y < 500:
         character.y += 5
         if character.y == 500:
             fundo_atual = fundoRoxo
+    #----------------
 
+    #----------------
+    #voltando para o fundo anterior
+
+    #
+    if fundo_atual == fundoRoxo:
+        if character.y <= 100:
+            fundo_atual = fundoVerde
+    
+    elif fundo_atual == fundoRosa:
+        if character.y  >= 350:
+            fundo_atual = fundoVerde
+    
+    elif fundo_atual == fundoAzul:
+        if character.x >= 655:
+            fundo_atual = fundoVerde
+    
+    elif fundo_atual == fundoAmarelo:
+        if character.x <= 145:
+            fundo_atual = fundoVerde
+    #----------------
+        
 
 #-----------
 #fazendo o jogo rodar !!!!!NÃO MEXA NISSO A MENOS SE FOR NESCESSARIO!!!
