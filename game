@@ -13,7 +13,8 @@ HEIGHT = 600
 
 reputacao = 30
 dinheiro = 500
-Vida = 100
+vida = 100
+mana = 100
 #-----------
 
 #-----------
@@ -74,7 +75,7 @@ def draw():
 
     screen.draw.text(
         "reputação: " + str(reputacao),
-        (30, 80),
+        (30, 20),
         fontsize=30,
         color="white"
     )
@@ -82,6 +83,20 @@ def draw():
     screen.draw.text(
         "dinheiro: " + str(dinheiro),
         (30, 40),
+        fontsize=30,
+        color="white"
+    )
+
+    screen.draw.text(
+        "vida: " + str(vida),
+        (30, 60), 
+        fontsize=30,
+        color="white"
+    )
+
+    screen.draw.text(
+        "mana " +str(mana),
+        (30, 80),
         fontsize=30,
         color="white"
     )
