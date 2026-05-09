@@ -6,7 +6,9 @@ from pgzero.actor import Actor
 #-----------
 
 #-----------
+
 # variáveis
+
 FPS = 30
 WIDTH = 800
 HEIGHT = 600
@@ -18,23 +20,27 @@ mana = 100
 #-----------
 
 #-----------
+
 # sprites 
+
 fundoVerde = None
 fundoAzul = None
 fundoRosa = None
 fundoAmarelo = None
 fundoRoxo = None
 fundoCiano = None
+fundoVinho = None
 fundo_atual = None
 
 quest = None
 character = None
 #-----------
+
 #definindo os sprites
 
 def ensure_sprites():
     global fundoVerde, fundoAzul, fundoRosa
-    global fundoAmarelo, fundoRoxo, fundoCiano
+    global fundoAmarelo, fundoRoxo, fundoCiano, fundoVinho
     global fundo_atual, quest, character
 
     if fundoVerde is None:
@@ -45,7 +51,7 @@ def ensure_sprites():
         fundoAmarelo = Actor("fundoamarelo")
         fundoRoxo = Actor("fundoroxo")
         fundoCiano = Actor("fundociano")
-
+        fundoVinho = Actor ("fundovinho")
         fundo_atual = fundoVerde
 
         quest = Actor("questbg", (750, 70))
@@ -53,7 +59,9 @@ def ensure_sprites():
 
 
 #-----------
+
 # draw - fazendo os sprites aparecerem na tela
+
 def draw():
     global fundo_atual
 
@@ -103,7 +111,9 @@ def draw():
 
 
 #-----------
+
 # update - criando troca de fundo, e movimentação 
+
 def update():
     global fundo_atual
 
@@ -112,6 +122,7 @@ def update():
     velocidade = 5
 
     #----------------
+    
     # movimentação
 
     if keyboard.left or keyboard.a:
@@ -127,6 +138,7 @@ def update():
         character.y += velocidade
 
     #----------------
+    
     # limites da tela
 
     if character.x < 0:
@@ -142,6 +154,7 @@ def update():
         character.y = HEIGHT
 
     #----------------
+    
     # trocas de fundo
 
     # fundo verde -> azul
@@ -169,6 +182,7 @@ def update():
             character.y = 50
 
     #----------------
+    
     # voltar para verde
 
     # azul -> verde
@@ -196,8 +210,10 @@ def update():
             character.y = HEIGHT - 50
 
     #----------------
+    
+    #indo de um fundo para o outro
+    
     # roxo -> ciano
-
     if fundo_atual == fundoRoxo:
         if character.x >= WIDTH:
             fundo_atual = fundoCiano
@@ -208,6 +224,13 @@ def update():
         if character.x <= 0:
             fundo_atual = fundoRoxo
             character.x = WIDTH - 50
+    
+    #ciano -> vinho
+    if fundo_atual == fundoCiano:
+        if character.x >= WIDTH:
+            fundo_atual = fundoVinho
+            character.x = 50
+    
 
 
 #-----------
