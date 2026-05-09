@@ -1,122 +1,202 @@
-#------------
-#bibliotecas
-import logging
+#-----------
+# bibliotecas
 import pgzero
 from pgzero.actor import Actor
-from pgzero.keyboard import keys
+
 #-----------
 
 #-----------
-#varievaies
+# variáveis
 FPS = 30
 WIDTH = 800
-HEIGHT = 600   
+HEIGHT = 600
 
 reputacao = 30
 dinheiro = 500
 Vida = 100
-
 #-----------
 
 #-----------
-#sprites
+# sprites 
 fundoVerde = None
 fundoAzul = None
 fundoRosa = None
 fundoAmarelo = None
 fundoRoxo = None
+fundoCiano = None
 fundo_atual = None
 
 quest = None
 character = None
-
 #-----------
+#definindo os sprites
 
 def ensure_sprites():
-    global fundoVerde, fundoAzul, fundoRosa, fundoAmarelo, fundoRoxo, fundo_atual, quest, character
+    global fundoVerde, fundoAzul, fundoRosa
+    global fundoAmarelo, fundoRoxo, fundoCiano
+    global fundo_atual, quest, character
+
     if fundoVerde is None:
+
         fundoVerde = Actor("fundoverde")
         fundoAzul = Actor("fundoazul")
         fundoRosa = Actor("fundorosa")
         fundoAmarelo = Actor("fundoamarelo")
         fundoRoxo = Actor("fundoroxo")
+        fundoCiano = Actor("fundociano")
+
         fundo_atual = fundoVerde
+
         quest = Actor("questbg", (750, 70))
         character = Actor("characterbg", (400, 300))
 
-#-----------
 
 #-----------
-#criando o ator
+# draw - fazendo os sprites aparecerem na tela
 def draw():
-    global fundo, quest, character, fundo_atual, fundoAzul
+    global fundo_atual
+
     ensure_sprites()
+
     screen.clear()
+
     fundo_atual.draw()
-    character.draw()
+
     quest.draw()
-    screen.draw.text("missão", (550, 70), fontsize=50, color="white")
-    screen.draw.text("reputação: " + str(reputacao), (50, 90), fontsize=30, color="white")
-    screen.draw.text("dinheiro:" + str(dinheiro), (50, 50), fontsize=30, color="white")
-#-----------
+    character.draw()
+
+    screen.draw.text(
+        "missão",
+        (650, 55),
+        fontsize=40,
+        color="white"
+    )
+
+    screen.draw.text(
+        "reputação: " + str(reputacao),
+        (30, 80),
+        fontsize=30,
+        color="white"
+    )
+
+    screen.draw.text(
+        "dinheiro: " + str(dinheiro),
+        (30, 40),
+        fontsize=30,
+        color="white"
+    )
+
 
 #-----------
-#criando a movimentação e troca de fundo
+# update - criando troca de fundo, e movimentação 
 def update():
-    global character, fundo_atual
+    global fundo_atual
+
     ensure_sprites()
-    #----------------
-    #troca para o proximo fundo
 
-    #fundo azul
-    if (keyboard.left or keyboard.a) and character.x > 20:
-        character.x -= 5
-        if character.x <= 20:
+    velocidade = 5
+
+    #----------------
+    # movimentação
+
+    if keyboard.left or keyboard.a:
+        character.x -= velocidade
+
+    if keyboard.right or keyboard.d:
+        character.x += velocidade
+
+    if keyboard.up or keyboard.w:
+        character.y -= velocidade
+
+    if keyboard.down or keyboard.s:
+        character.y += velocidade
+
+    #----------------
+    # limites da tela
+
+    if character.x < 0:
+        character.x = 0
+
+    if character.x > WIDTH:
+        character.x = WIDTH
+
+    if character.y < 0:
+        character.y = 0
+
+    if character.y > HEIGHT:
+        character.y = HEIGHT
+
+    #----------------
+    # trocas de fundo
+
+    # fundo verde -> azul
+    if fundo_atual == fundoVerde:
+        if character.x <= 0:
             fundo_atual = fundoAzul
+            character.x = WIDTH - 50
 
-    #fundo amarelo
-    if (keyboard.right or keyboard.d) and character.x < 760:
-        character.x += 5
-        if character.x == 760:
+    # fundo verde -> amarelo
+    if fundo_atual == fundoVerde:
+        if character.x >= WIDTH:
             fundo_atual = fundoAmarelo
+            character.x = 50
 
-    #fundo rosa
-    if (keyboard.up or keyboard.w) and character.y > 20:
-        character.y -= 5
-        if character.y == 20:
+    # fundo verde -> rosa
+    if fundo_atual == fundoVerde:
+        if character.y <= 0:
             fundo_atual = fundoRosa
+            character.y = HEIGHT - 50
 
-    #fundo roxo
-    if (keyboard.down or keyboard.s) and character.y < 500:
-        character.y += 5
-        if character.y == 500:
+    # fundo verde -> roxo
+    if fundo_atual == fundoVerde:
+        if character.y >= HEIGHT:
             fundo_atual = fundoRoxo
-    #----------------
+            character.y = 50
 
     #----------------
-    #voltando para o fundo anterior
+    # voltar para verde
 
-    #
+    # azul -> verde
+    if fundo_atual == fundoAzul:
+        if character.x >= WIDTH:
+            fundo_atual = fundoVerde
+            character.x = 50
+
+    # amarelo -> verde
+    if fundo_atual == fundoAmarelo:
+        if character.x <= 0:
+            fundo_atual = fundoVerde
+            character.x = WIDTH - 50
+
+    # rosa -> verde
+    if fundo_atual == fundoRosa:
+        if character.y >= HEIGHT:
+            fundo_atual = fundoVerde
+            character.y = 50
+
+    # roxo -> verde
     if fundo_atual == fundoRoxo:
-        if character.y <= 100:
+        if character.y <= 0:
             fundo_atual = fundoVerde
-    
-    elif fundo_atual == fundoRosa:
-        if character.y  >= 350:
-            fundo_atual = fundoVerde
-    
-    elif fundo_atual == fundoAzul:
-        if character.x >= 655:
-            fundo_atual = fundoVerde
-    
-    elif fundo_atual == fundoAmarelo:
-        if character.x <= 145:
-            fundo_atual = fundoVerde
+            character.y = HEIGHT - 50
+
     #----------------
-        
+    # roxo -> ciano
+
+    if fundo_atual == fundoRoxo:
+        if character.x >= WIDTH:
+            fundo_atual = fundoCiano
+            character.x = 50
+
+    # ciano -> roxo
+    if fundo_atual == fundoCiano:
+        if character.x <= 0:
+            fundo_atual = fundoRoxo
+            character.x = WIDTH - 50
+
 
 #-----------
-#fazendo o jogo rodar !!!!!NÃO MEXA NISSO A MENOS SE FOR NESCESSARIO!!!
+# rodar jogo
 if __name__ == '__main__':
     import pgzrun
     pgzrun.go()
