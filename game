@@ -6,9 +6,7 @@ from pgzero.actor import Actor
 #-----------
 
 #-----------
-
 # variáveis
-
 FPS = 30
 WIDTH = 800
 HEIGHT = 600
@@ -20,59 +18,80 @@ mana = 100
 #-----------
 
 #-----------
+# sprites
 
-# sprites 
+trilhaInicial = None
+trilhaSegundaria = None
+trilhaTerciaria = None
 
-fundoVerde = None
-fundoAzul = None
-fundoRosa = None
 fundoAmarelo = None
 fundoRoxo = None
 fundoCiano = None
 fundoVinho = None
+
 fundo_atual = None
 
 quest = None
 character = None
+
 #-----------
 
-#definindo os sprites
+#-----------
+# carregando sprites
 
 def ensure_sprites():
-    global fundoVerde, fundoAzul, fundoRosa
-    global fundoAmarelo, fundoRoxo, fundoCiano, fundoVinho
-    global fundo_atual, quest, character
 
-    if fundoVerde is None:
+    global trilhaInicial
+    global trilhaSegundaria
+    global trilhaTerciaria
 
-        fundoVerde = Actor("fundoverde")
-        fundoAzul = Actor("fundoazul")
-        fundoRosa = Actor("fundorosa")
-        fundoAmarelo = Actor("fundoamarelo")
-        fundoRoxo = Actor("fundoroxo")
-        fundoCiano = Actor("fundociano")
-        fundoVinho = Actor ("fundovinho")
-        fundo_atual = fundoVerde
+    global fundoAmarelo
+    global fundoRoxo
+    global fundoCiano
+    global fundoVinho
 
-        quest = Actor("questbg", (750, 70))
-        character = Actor("characterbg", (400, 300))
+    global fundo_atual
+    global quest
+    global character
 
+    # evita recriar tudo toda hora
+    if character is not None:
+        return
+
+    trilhaInicial = Actor("trilhainicial")
+    trilhaSegundaria = Actor("trilhasegundaria")
+    trilhaTerciaria = Actor("trilhaterciaria")
+
+    fundoAmarelo = Actor("fundoamarelo")
+    fundoRoxo = Actor("fundoroxo")
+    fundoCiano = Actor("fundociano")
+    fundoVinho = Actor("fundovinho")
+
+    fundo_atual = trilhaInicial
+
+    quest = Actor("questbg", (730, 70))
+    character = Actor("characterbg", (400, 300))
 
 #-----------
 
-# draw - fazendo os sprites aparecerem na tela
+
+#-----------
+# draw
 
 def draw():
-    global fundo_atual
 
     ensure_sprites()
 
     screen.clear()
 
-    fundo_atual.draw()
+    if fundo_atual is not None:
+        fundo_atual.draw()
 
-    quest.draw()
-    character.draw()
+    if quest is not None:
+        quest.draw()
+
+    if character is not None:
+        character.draw()
 
     screen.draw.text(
         "missão",
@@ -90,39 +109,44 @@ def draw():
 
     screen.draw.text(
         "dinheiro: " + str(dinheiro),
-        (30, 40),
+        (30, 50),
         fontsize=30,
         color="white"
     )
 
     screen.draw.text(
         "vida: " + str(vida),
-        (30, 60), 
-        fontsize=30,
-        color="white"
-    )
-
-    screen.draw.text(
-        "mana " +str(mana),
         (30, 80),
         fontsize=30,
         color="white"
     )
 
+    screen.draw.text(
+        "mana: " + str(mana),
+        (30, 110),
+        fontsize=30,
+        color="white"
+    )
 
 #-----------
 
-# update - criando troca de fundo, e movimentação 
+
+#-----------
+# update
 
 def update():
+
     global fundo_atual
 
     ensure_sprites()
 
+    # segurança extra
+    if character is None:
+        return
+
     velocidade = 5
 
-    #----------------
-    
+    #-----------
     # movimentação
 
     if keyboard.left or keyboard.a:
@@ -137,105 +161,106 @@ def update():
     if keyboard.down or keyboard.s:
         character.y += velocidade
 
-    #----------------
-    
-    # limites da tela
+    #-----------
+    # mapa principal
 
-    if character.x < 0:
-        character.x = 0
+    if fundo_atual == trilhaInicial:
 
-    if character.x > WIDTH:
-        character.x = WIDTH
-
-    if character.y < 0:
-        character.y = 0
-
-    if character.y > HEIGHT:
-        character.y = HEIGHT
-
-    #----------------
-    
-    # trocas de fundo
-
-    # fundo verde -> azul
-    if fundo_atual == fundoVerde:
+        # esquerda
         if character.x <= 0:
-            fundo_atual = fundoAzul
-            character.x = WIDTH - 50
+            character.x = 0
+            screen.draw.text(
+                "chegou nos limites desta tela",
+                (30, 30),
+                fontsize = 60,
+                color = "red"
+            )
 
-    # fundo verde -> amarelo
-    if fundo_atual == fundoVerde:
-        if character.x >= WIDTH:
-            fundo_atual = fundoAmarelo
-            character.x = 50
+        # direita
+        elif character.x >= WIDTH:
+            character.x = WIDTH
+            screen.draw.text("cegou nos limites desta tela",
+                             (30, 30),
+                             fontsize = 60,
+                             color = "red")
 
-    # fundo verde -> rosa
-    if fundo_atual == fundoVerde:
-        if character.y <= 0:
-            fundo_atual = fundoRosa
+        # cima
+        elif character.y <= 0:
+            fundo_atual = trilhaTerciaria
             character.y = HEIGHT - 50
 
-    # fundo verde -> roxo
-    if fundo_atual == fundoVerde:
-        if character.y >= HEIGHT:
-            fundo_atual = fundoRoxo
+        # baixo
+        elif character.y >= HEIGHT:
+            fundo_atual = trilhaSegundaria
             character.y = 50
 
-    #----------------
-    
-    # voltar para verde
+    #-----------
+    # trilha secundaria
 
-    # azul -> verde
-    if fundo_atual == fundoAzul:
-        if character.x >= WIDTH:
-            fundo_atual = fundoVerde
-            character.x = 50
+   
 
-    # amarelo -> verde
-    if fundo_atual == fundoAmarelo:
-        if character.x <= 0:
-            fundo_atual = fundoVerde
-            character.x = WIDTH - 50
+    #-----------
+ 
+    #-----------
+    # trilha terciaria
 
-    # rosa -> verde
-    if fundo_atual == fundoRosa:
+    elif fundo_atual == trilhaTerciaria:
+
         if character.y >= HEIGHT:
-            fundo_atual = fundoVerde
+            fundo_atual = trilhaInicial
             character.y = 50
 
-    # roxo -> verde
-    if fundo_atual == fundoRoxo:
+    #-----------
+    # para baixo
+
+    if fundo_atual == trilhaSegundaria:
+
+        #voltar pro mapa inicial
         if character.y <= 0:
-            fundo_atual = fundoVerde
+            fundo_atual = trilhaInicial
             character.y = HEIGHT - 50
 
-    #----------------
-    
-    #indo de um fundo para o outro
-    
-    # roxo -> ciano
-    if fundo_atual == fundoRoxo:
-        if character.x >= WIDTH:
+        #limite esquerdo
+        elif character.x <= 0:
+            character.x = 0
+
+        #ir para o ciano 
+        elif character.x >=WIDTH:
             fundo_atual = fundoCiano
             character.x = 50
 
-    # ciano -> roxo
-    if fundo_atual == fundoCiano:
+    #-----------
+    # fundo ciano
+
+    elif fundo_atual == fundoCiano:
+
+        # voltar pro roxo
         if character.x <= 0:
-            fundo_atual = fundoRoxo
+            fundo_atual = trilhaSegundaria
             character.x = WIDTH - 50
-    
-    #ciano -> vinho
-    if fundo_atual == fundoCiano:
-        if character.x >= WIDTH:
+
+        # ir pro vinho
+        elif character.x >= WIDTH:
             fundo_atual = fundoVinho
             character.x = 50
-    
+
+    #-----------
+    # fundo vinho
+
+    elif fundo_atual == fundoVinho:
+
+        if character.x <= 0:
+            fundo_atual = fundoCiano
+            character.x = WIDTH - 50
+
+#-----------
 
 
 #-----------
 # rodar jogo
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import pgzrun
     pgzrun.go()
+
 #-----------
