@@ -23,6 +23,7 @@ mana = 100
 trilhaInicial = None
 trilhaSegundaria = None
 trilhaTerciaria = None
+trilhaVila = None
 
 fundoAmarelo = None
 fundoRoxo = None
@@ -44,6 +45,7 @@ def ensure_sprites():
     global trilhaInicial
     global trilhaSegundaria
     global trilhaTerciaria
+    global trilhaVila
 
     global fundoAmarelo
     global fundoRoxo
@@ -61,6 +63,7 @@ def ensure_sprites():
     trilhaInicial = Actor("trilhainicial")
     trilhaSegundaria = Actor("trilhasegundaria")
     trilhaTerciaria = Actor("trilhaterciaria")
+    trilhaVila = Actor("trilhavila")
 
     fundoAmarelo = Actor("fundoamarelo")
     fundoRoxo = Actor("fundoroxo")
@@ -226,13 +229,13 @@ def update():
 
         #ir para o ciano 
         elif character.x >=WIDTH:
-            fundo_atual = fundoCiano
+            fundo_atual = trilhaVila
             character.x = 50
 
     #-----------
     # fundo ciano
 
-    elif fundo_atual == fundoCiano:
+    elif fundo_atual == trilhaVila:
 
         # voltar pro roxo
         if character.x <= 0:
@@ -250,7 +253,7 @@ def update():
     elif fundo_atual == fundoVinho:
 
         if character.x <= 0:
-            fundo_atual = fundoCiano
+            fundo_atual = trilhaVila
             character.x = WIDTH - 50
 
 #-----------
