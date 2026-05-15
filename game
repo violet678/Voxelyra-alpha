@@ -61,7 +61,7 @@ def ensure_sprites():
         return
 
     trilhaInicial = Actor("trilhainicial")
-    trilhaSegundaria = Actor("trilhasegundaria")
+    trilhaSegundaria = Actor("segundasegundaria")
     trilhaTerciaria = Actor("trilhaterciaria")
     trilhaVila = Actor("trilhavila")
 
@@ -222,6 +222,9 @@ def update():
         if character.y <= 0:
             fundo_atual = trilhaInicial
             character.y = HEIGHT - 50
+        
+        if character.y >= HEIGHT:
+            character.y = 550
 
         #limite esquerdo
         elif character.x <= 0:
@@ -246,6 +249,12 @@ def update():
         elif character.x >= WIDTH:
             fundo_atual = fundoVinho
             character.x = 50
+        
+        elif character.y <=0:
+            character.y = 50
+        
+        elif character.y >=550:
+            character.y = 500
 
     #-----------
     # fundo vinho
